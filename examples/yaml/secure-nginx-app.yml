@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app
+  labels:
+    name: app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app
+  namespace: app
+  labels:
+    app: nginx-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-app
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+        securityContext:
+          privileged: false # changed
+        # added
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          request:
+            cpu: 500m
+            memory: 128Mi
